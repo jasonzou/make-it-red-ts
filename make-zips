@@ -1,0 +1,38 @@
+#!/bin/bash
+set -euo pipefail
+
+# Build TypeScript sources from src-2.0/src/*.ts to src-2.0/build/*.js
+echo "Building TypeScript..."
+npm run build:2.0
+
+rm -rf build
+mkdir build
+
+# Package src-2.0: Copy compiled JS (from TypeScript build) and resources
+if [ -d "src-2.0" ]; then
+  mkdir -p build/temp-2.0
+
+  # Copy compiled JavaScript files (generated from TypeScript)
+  cp src-2.0/build/*.js build/temp-2.0/
+
+  # Copy static resources
+  cp src-2.0/manifest.json build/temp-2.0/
+  cp src-2.0/p*.js build/temp-2.0/
+  cp src-2.0/p*.xhtml build/temp-2.0/
+  cp src-2.0/style.css build/temp-2.0/
+  cp -r src-2.0/locale build/temp-2.0/
+
+  cd build/temp-2.0
+  zip -r ../make-it-red-2.0.xpi *
+  cd ../..
+  rm -rf build/temp-2.0
+fi
+
+cd build
+
+# Generate update manifests only if the template and XPI files exist
+if [ -f "../updates-2.0.json.tmpl" ] && [ -f "make-it-red-2.0.xpi" ]; then
+  jq ".addons[\"make-it-red@example.com\"].updates[0].update_hash = \"sha256:`shasum -a 256 make-it-red-2.0.xpi | cut -d' ' -f1`\"" ../updates-2.0.json.tmpl > updates-2.0.json
+fi
+
+echo "Build complete!"

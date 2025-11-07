@@ -1,0 +1,21 @@
+{
+  "name": "make-it-red",
+  "version": "2.0.0",
+  "description": "A sample plugin for Zotero 7",
+  "scripts": {
+    "build": "npm run build:2.0",
+    "build:2.0": "tsc -p tsconfig.2.0.json",
+    "watch:2.0": "tsc -p tsconfig.2.0.json --watch",
+    "clean": "rm -rf src-2.0/build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zotero/make-it-red"
+  },
+  "author": "Zotero",
+  "license": "AGPL-3.0"
+}
